@@ -30,9 +30,9 @@ app.get(apiUrl("version"), (req, res) => {
 
 
 app.get(apiUrl("recipes"), controllers.recipes.getAll);
-app.get(apiUrl("recipes/:name"), controllers.recipes.getByName);
-app.get(apiUrl("recipes/:name/ingredients"), controllers.recipes.getIngredientsByRecipeName);
-app.get(apiUrl("recipes/:name/ingredients/condiments"), controllers.recipes.getCondimentsByRecipeName);
+app.get(apiUrl("recipes/:id"), controllers.recipes.getById);
+app.get(apiUrl("recipes/:id/ingredients"), controllers.recipes.getIngredientsByRecipeId);
+app.get(apiUrl("recipes/:id/ingredients/condiments"), controllers.recipes.getCondimentsByRecipeId);
 
 
 app.listen(config.port, () => {
