@@ -9,7 +9,6 @@ module.exports = new Pool({
     host: config.pg.hostname,
     port: config.pg.port,
     database: config.pg.database,
-    ssl: true,
     strictSSL: false,
     max: 1
 });

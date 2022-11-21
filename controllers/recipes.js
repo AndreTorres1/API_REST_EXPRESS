@@ -1,44 +1,39 @@
-const database = require("../database-json");
-
 const services = require("../services");
 
 module.exports = {
 
     getAll: async (req, res) => {
-        res.send(database);
+        return services.recipes
+            .getAll()
+            .then(recipes => res.status(200).send(recipes));
     },
 
-    getByName: async(req, res) => {
+    getById: async(req, res) => {
         try {
-            res.send(
-                services.recipes.getByName(req.params.name)
-            );
-        } catch (err) {
-            res.status(404).send(err);
+            let recipe = await services.recipes.getById(req.params.id);
+            res.status(200).send(recipe);
+        } catch ({message}) {
+            res.status(404).send({error: message});
         }
     },
 
-    getIngredientsByRecipeName: async(req, res) => {
+    getIngredientsByRecipeId: async(req, res) => {
         try {
-            res.send(
-                services.recipes.getByName(req.params.name)?.ingredients||[]
+            res.status(200).send(
+                await services.recipes.getIngredients(req.params.id)
             );
-        } catch (err) {
-            res.status(404).send(err);
+        } catch ({message}) {
+            res.status(404).send({error: message});
         }
     },
 
-    getCondimentsByRecipeName: async(req, res) => {
+    getCondimentsByRecipeId: async(req, res) => {
         try {
-            res.send(
-                services.recipes.getByName(req.params.name)
-                    ?.ingredients
-                    ?.filter(ing => ing.type === "Condiments")
-                    ?.map(ing => ing.name)
-                ||[]
+            res.status(200).send(
+                await services.recipes.getIngredientsByType(req.params.id,"condiments")
             );
-        } catch (err) {
-            res.status(404).send(err);
+        } catch ({message}) {
+            res.status(404).send({error: message});
         }
     }
 
