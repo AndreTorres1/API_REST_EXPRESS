@@ -1,20 +1,21 @@
 services:
-  #dev:
-  #  container_name: is-dev
-  # build: src
-  #  volumes:
-  #    - "./src:/usr/src/app"
-  #  depends_on:
-  #    - database
-  #  network_mode: host
+  dev:
+    container_name: sd-dev
+    build: dev
+    volumes:
+      - "./dev:/usr/src/app"
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
 
-  database:
+  db:
     container_name: sd-db
     build: db
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - pg_data:/var/lib/postgresql/data/
     ports:
       - "6000:5432"
 
 volumes:
-  postgres_data:
+  pg_data:

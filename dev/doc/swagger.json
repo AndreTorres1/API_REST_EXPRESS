@@ -23,7 +23,6 @@
       "default": "Roasted Asparagus"
     },
 
-
     "email": {
       "name": "email",
       "description": "email para autenticação",
@@ -31,6 +30,7 @@
       "in": "header",
       "default": "admin@admin"
     },
+
     "password": {
       "name": "password",
       "description": "password para autenticação",
@@ -120,101 +120,12 @@
       }
     },
 
-
-
-
-
     "/api/version": {
       "get": {
         "description": "Obtem a versão atual da API",
         "responses": {
           "200": {
             "description": "Este endpoint retorna sempre com successo"
-          }
-        }
-      }
-    },
-
-    "/api/users": {
-      "get": {
-        "description": "Obtem uma lista de utilizadores",
-        "parameters": [
-          {
-            "$ref": "#/parameters/email"
-          },
-          {
-            "$ref": "#/parameters/password"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Este endpoint retorna a lista de users por defeito"
-          }
-        }
-      },
-      "post": {
-        "description": "Permite inserir um novo utilizador",
-        "parameters": [
-          {
-            "$ref": "#/parameters/email"
-          },
-          {
-            "$ref": "#/parameters/password"
-          },
-          {
-            "name": "user-details",
-            "description": "Detalhes do novo utilizador",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "required": [
-                "email",
-                "password",
-                "name"
-              ],
-              "properties": {
-                "email": {
-                  "type": "string",
-                  "description": "Email do novo utilizador",
-                  "default": "test@mail.com"
-                },
-                "password": {
-                  "type": "string",
-                  "format": "password",
-                  "description": "Password do novo utilizador",
-                  "default": "123456"
-                },
-                "name": {
-                  "type": "string",
-                  "description": "Nome do novo utilizador",
-                  "default": "Test"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Se for possível inserir o utilizador"
-          },
-          "400": {
-            "description": "Se o utilizador já existir"
-          }
-        }
-      }
-    },
-
-    "/api/admins": {
-      "get": {
-        "description": "Obtem uma lista de admins",
-        "parameters": [{
-          "$ref": "#/parameters/email"
-        },{
-          "$ref": "#/parameters/password"
-        }],
-        "responses": {
-          "200": {
-            "description": "Este endpoint retorna a lista de admins por defeito"
           }
         }
       }

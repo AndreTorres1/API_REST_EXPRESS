@@ -21,19 +21,11 @@ app.use(express.json());
 app.use(cors({credentials: true, origin: true}));
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
-app.get(apiUrl("version"), (req, res) => {
-
-    res.send({
-        version: config.version
-    });
-});
-
-
+app.get(apiUrl("version"), controllers.version.get);
 app.get(apiUrl("recipes"), controllers.recipes.getAll);
 app.get(apiUrl("recipes/:id"), controllers.recipes.getById);
 app.get(apiUrl("recipes/:id/ingredients"), controllers.recipes.getIngredientsByRecipeId);
 app.get(apiUrl("recipes/:id/ingredients/condiments"), controllers.recipes.getCondimentsByRecipeId);
-
 
 app.listen(config.port, () => {
     console.log(`api is listening on port ${config.port}!`)
