@@ -7,11 +7,25 @@
     "version": "1.0"
   },
 
+  "servers": [
+    "localhost:3000"
+  ],
+
   "schemes": [
     "http"
   ],
 
   "parameters": {
+    "recipe": {
+      "name": "recipe",
+      "in": "body",
+      "description": "A new recipe to be created",
+      "required": true,
+      "schema": {
+        "name": {}
+      }
+    },
+
     "recipeNameInPath": {
       "name": "recipeName",
       "in": "path",
@@ -37,6 +51,39 @@
       "required": true,
       "in": "header",
       "default": "12456"
+    },
+
+    "recipeBodyName": {
+      "name": "name",
+      "description": "The name of the recipe",
+      "required": true,
+      "in": "body",
+      "schema": {
+        "type": "string",
+        "default": ""
+      }
+    },
+
+    "recipeBodyOriginalUrl": {
+      "name": "originalUrl",
+      "description": "The url where the recipe was found",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "type": "string",
+        "default": null
+      }
+    },
+
+    "recipeBodyImageUrl": {
+      "name": "imageUrl",
+      "description": "A descriptive image of the recipe",
+      "required": false,
+      "in": "body",
+      "schema": {
+        "type": "string",
+        "default": null
+      }
     }
   },
 
@@ -60,6 +107,29 @@
             "description": "This endpoint always returns with success"
           }
         }
+      },
+
+      "post": {
+        "description": "Insert a new recipe into the database",
+        "responses": {
+          "201": {
+            "description": "If the recipe was created successfully"
+          },
+          "400": {
+            "description": "If an error occurs"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/recipeBodyName"
+          },
+          {
+            "$ref": "#/parameters/recipeBodyImageUrl"
+          },
+          {
+            "$ref": "#/parameters/recipeBodyOriginalUrl"
+          }
+        ]
       }
     },
 

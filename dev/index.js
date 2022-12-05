@@ -21,11 +21,20 @@ app.use(express.json());
 app.use(cors({credentials: true, origin: true}));
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
-app.get(apiUrl("version"), controllers.version.get);
-app.get(apiUrl("recipes"), controllers.recipes.getAll);
-app.get(apiUrl("recipes/:id"), controllers.recipes.getById);
-app.get(apiUrl("recipes/:id/ingredients"), controllers.recipes.getIngredientsByRecipeId);
-app.get(apiUrl("recipes/:id/ingredients/condiments"), controllers.recipes.getCondimentsByRecipeId);
+
+[
+    { method: "get",    url: "version",                             cb: controllers.version.get    },
+
+    { method: "get",    url: "recipes",                             cb: controllers.recipes.getAll },
+    { method: "post",   url: "recipes",                             cb: controllers.recipes.insert },
+
+    { method: "get",    url: "recipes/:id",                         cb: controllers.recipes.getById },
+    { method: "get",    url: "recipes/:id/ingredients",             cb: controllers.recipes.getIngredientsByRecipeId},
+    { method: "get",    url: "recipes/:id/ingredients/condiments",  cb: controllers.recipes.getCondimentsByRecipeId}
+
+].forEach(({method, url, cb}) => {
+    app[method](apiUrl(url), cb);
+});
 
 app.listen(config.port, () => {
     console.log(`api is listening on port ${config.port}!`)

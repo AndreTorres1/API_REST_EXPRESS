@@ -56,6 +56,15 @@ module.exports = {
               ri.recipe_id = $1 AND 
               i.type = $2
         `, [id, type]).then(q => q.rows);
+    },
+
+    insert: async({name, imageUrl = "", originalUrl = ""}) => {
+        return db.query(`
+            INSERT INTO
+              recipes(name, image_url, original_url)
+            VALUES ($1, $2, $3)
+            RETURNING *
+        `, [name, imageUrl, originalUrl]).then(q => q.rows);
     }
 
 }

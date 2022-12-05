@@ -12,7 +12,7 @@ module.exports = {
      */
     port: env.PORT || 3000,
 
-    hostname: env.HOSTNAME || "localhost",
+    hostname: env.HOST || "localhost",
 
     baseUrl: env.BASE_URL || "/api/v1",
 
