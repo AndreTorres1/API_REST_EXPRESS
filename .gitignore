@@ -48,8 +48,4 @@ Thumbs.db
 *.mov
 *.wmv
 
-/dev/.env
-
 /.idea
-
-/dev/.env
