@@ -35,6 +35,20 @@ module.exports = {
         } catch ({message}) {
             res.status(404).send({error: message});
         }
+    },
+
+    insert: async (req, res) => {
+        try {
+            const { name, imageUrl, originalUrl } = req.body;
+
+            res.status(201).send(
+                await services.recipes.insert({
+                    name, imageUrl, originalUrl
+                })
+            );
+        } catch ({message}) {
+            res.status(400).send({error: message});
+        }
     }
 
 }

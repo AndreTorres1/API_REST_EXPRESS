@@ -4,9 +4,8 @@
   "description": "este é um projeto para demonstração nas aulas de SD",
   "main": "index.js",
   "scripts": {
-    "prestart": "npm install",
+    "prestart": "(npm install) && (npm run migrate)",
     "start": "node index.js",
-    "prewatch": "npm install",
     "watch": "nodemon index.js",
     "migrate": "db-migrate up -v"
   },
