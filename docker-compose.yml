@@ -8,14 +8,21 @@ services:
       - db
     ports:
       - "3000:3000"
+      - "4000:4000"
 
   db:
     container_name: sd-db
-    build: db
+    build: db/prod
     volumes:
       - pg_data:/var/lib/postgresql/data/
     ports:
       - "6000:5432"
+
+  db-test:
+    container_name: sd-test-db
+    build: db/test
+    ports:
+      - "6001:5432"
 
 volumes:
   pg_data:

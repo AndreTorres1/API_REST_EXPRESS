@@ -1,0 +1,7 @@
+FROM postgres:9.6.5
+
+ENV POSTGRES_USER=sd-test
+ENV POSTGRES_PASSWORD=sd-test
+ENV POSTGRES_DB=sd-test
+
+EXPOSE 5432

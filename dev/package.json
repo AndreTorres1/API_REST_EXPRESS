@@ -1,13 +1,19 @@
 {
   "name": "sd-aulas",
-  "version": "0.1",
+  "version": "0.2",
   "description": "este é um projeto para demonstração nas aulas de SD",
   "main": "index.js",
   "scripts": {
-    "prestart": "(npm install) && (npm run migrate)",
+    "migrate": "db-migrate up -v",
+
+    "prestart": "(npm install) && (NODE_ENV=dev npm run migrate)",
     "start": "node index.js",
+
     "watch": "nodemon index.js",
-    "migrate": "db-migrate up -v"
+
+    "prestart-test": "(npm install) && (NODE_ENV=test npm run migrate)",
+    "start-test": "NODE_ENV=test node index.js",
+    "test": "mocha tests --timeout 60000 --exit"
   },
   "keywords": [
     "serviços",
@@ -21,6 +27,7 @@
     "db-migrate-pg": "^1.2.2",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "mocha": "^10.2.0",
     "pg": "^8.8.0",
     "pg-pool": "^3.5.2",
     "swagger-ui-express": "^4.5.0"

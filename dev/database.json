@@ -1,11 +1,21 @@
 {
+  "defaultEnv": {"ENV": "NODE_ENV"},
   "dev": {
     "driver": "pg",
+    "host": { "ENV": "POSTGRES_HOSTNAME" },
+    "port": { "ENV": "POSTGRES_PORT" },
+    "database": { "ENV": "POSTGRES_DATABASE" },
     "user": { "ENV": "POSTGRES_USERNAME" },
     "password": { "ENV": "POSTGRES_PASSWORD" },
-    "host": { "ENV": "POSTGRES_HOSTNAME" },
-    "database": { "ENV": "POSTGRES_DATABASE" },
-    "port": { "ENV": "POSTGRES_PORT" },
+    "schema": "public"
+  },
+  "test": {
+    "driver": "pg",
+    "host": "db-test",
+    "port": "5432",
+    "database": "sd-test",
+    "user": "sd-test",
+    "password": "sd-test",
     "schema": "public"
   }
 }
