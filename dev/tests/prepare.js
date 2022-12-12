@@ -26,6 +26,4 @@ async function startServer() {
     return serverProcess;
 }
 
-beforeEach(startServer)
-
-//before(startServer);
+before(startServer);

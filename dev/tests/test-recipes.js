@@ -8,7 +8,7 @@ describe('[controller] recipes', () => {
             assert.strictEqual(response.status, 200);
             assert.strictEqual(response.headers.get('content-type'), 'application/json; charset=utf-8');
             const recipes = await response.json();
-            assert.equal(recipes.length, 5);
+            assert.equal(recipes.length, 9);
         });
     });
 
