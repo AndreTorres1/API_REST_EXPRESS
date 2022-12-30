@@ -1,7 +1,6 @@
 {
-  "name": "sd-aulas",
+  "name": "newprojectsd",
   "version": "0.2",
-  "description": "este é um projeto para demonstração nas aulas de SD",
   "main": "index.js",
   "scripts": {
     "migrate": "db-migrate up -v",
@@ -16,19 +15,25 @@
     "serviços",
     "distribuídos"
   ],
-  "author": "Luís Teófilo",
+  "author": "Andre",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "csv-parse": "^5.3.3",
+    "csv-parser": "^3.0.0",
     "db-migrate": "^0.11.13",
     "db-migrate-pg": "^1.2.2",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
     "mocha": "^10.2.0",
     "node-fetch": "^3.3.0",
     "pg": "^8.8.0",
     "pg-pool": "^3.5.2",
-    "swagger-ui-express": "^4.5.0"
+    "swagger-tools": "^0.10.4",
+    "swagger-ui-express": "^4.5.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

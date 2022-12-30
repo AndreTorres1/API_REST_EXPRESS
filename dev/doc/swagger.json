@@ -1,20 +1,24 @@
 {
   "swagger": "2.0",
-
   "info": {
-    "title": "Recipes API",
-    "description": "This API allows for users to retrieve and update recipes information.",
+    "title": "Movies API",
+    "description": "This API allows for users to retrieve and update movies",
     "version": "1.0"
   },
-
   "servers": [
     "localhost:3000"
   ],
-
   "schemes": [
     "http"
   ],
-
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "x-access-token",
+      "in": "header",
+      "description": "Enter the authentication token"
+    }
+  },
   "parameters": {
     "recipe": {
       "name": "recipe",
@@ -25,18 +29,37 @@
         "name": {}
       }
     },
-
-    "recipeNameInPath": {
-      "name": "recipeName",
+    "userIDinPath": {
+      "name": "id",
       "in": "path",
-      "description": "The name of the recipe",
+      "description": "The ID of the User",
       "required": true,
       "schema": {
         "type": "string"
       },
-      "default": "Roasted Asparagus"
+      "default": ""
     },
-
+    "show_id": {
+      "name": "show_id",
+      "in": "path",
+      "description": "The ID of the Movie",
+      "required": true,
+      "schema": {
+        "type": "integer"
+      },
+      "default": ""
+    },
+    "releaseYear": {
+      "name": "release_year",
+      "in": "path",
+      "description": "The release year data",
+      "required": true,
+      "schema": {
+        "type": "string"
+      },
+      "default": "2009",
+      "type": "integer"
+    },
     "email": {
       "name": "email",
       "description": "email para autenticação",
@@ -44,7 +67,6 @@
       "in": "header",
       "default": "admin@admin"
     },
-
     "password": {
       "name": "password",
       "description": "password para autenticação",
@@ -52,68 +74,82 @@
       "in": "header",
       "default": "12456"
     },
-
-    "recipeBodyName": {
+    "userBody": {
       "name": "name",
-      "description": "The name of the recipe",
+      "description": "User info",
       "required": true,
       "in": "body",
       "schema": {
         "type": "string",
-        "default": ""
+        "default": "{\n    \"email\":\"default@default\",\n    \"password\":\"default\",\n    \"permissao\": \"admin\"\n}"
       }
     },
-
-    "recipeBodyOriginalUrl": {
-      "name": "originalUrl",
-      "description": "The url where the recipe was found",
-      "required": false,
+    "movieBody": {
+      "name": "name",
+      "description": "Movie info",
+      "required": true,
       "in": "body",
       "schema": {
         "type": "string",
-        "default": null
-      }
-    },
-
-    "recipeBodyImageUrl": {
-      "name": "imageUrl",
-      "description": "A descriptive image of the recipe",
-      "required": false,
-      "in": "body",
-      "schema": {
-        "type": "string",
-        "default": null
+        "default": "{\n    \"type\":\"default@default\",\n    \"title\":\"default\",\n    \"director\": \"admin\",\n    \"cast\":\"default\",\n    \"country\":\"default\",\n    \"date_added\":\"default\",\n    \"rating\":\"default\",\n    \"duration\":\"default\",\n    \"listed_in\":\"default\",\n    \"description\":\"default\",\n    \"release_year\":2009\n}"
       }
     }
   },
-
   "paths": {
     "/version": {
       "get": {
+        "security": [
+          "bearerAuth"
+        ],
+        "tags": [
+          "Version"
+        ],
         "description": "Retrieves the current version of the API",
         "responses": {
           "200": {
             "description": "This endpoint always returns with success"
+          },
+          "401": {
+            "description": "Error making authentication"
           }
         }
       }
     },
-
-    "/recipes": {
+    "/users": {
       "get": {
-        "description": "Retrieves all the available recipes",
+
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Retrieves all the available users",
         "responses": {
           "200": {
             "description": "This endpoint always returns with success"
+          },
+          "401": {
+            "description": "Error making authentication"
           }
         }
       },
-
       "post": {
-        "description": "Insert a new recipe into the database",
+
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Insert a new user into the database",
         "responses": {
           "201": {
-            "description": "If the recipe was created successfully"
+            "description": "If the user was created successfully"
           },
           "400": {
             "description": "If an error occurs"
@@ -121,24 +157,26 @@
         },
         "parameters": [
           {
-            "$ref": "#/parameters/recipeBodyName"
-          },
-          {
-            "$ref": "#/parameters/recipeBodyImageUrl"
-          },
-          {
-            "$ref": "#/parameters/recipeBodyOriginalUrl"
+            "$ref": "#/parameters/userBody"
           }
         ]
       }
     },
-
-    "/recipes/{recipeName}": {
+    "/users/{id}": {
       "get": {
-        "description": "Retrieves a recipe by its name",
+
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Retrieves a user with specific ID",
         "parameters": [
           {
-            "$ref": "#/parameters/recipeNameInPath"
+            "$ref": "#/parameters/userIDinPath"
           }
         ],
         "responses": {
@@ -149,12 +187,109 @@
             "description": "If there is no recipe with the given name"
           }
         }
+      },
+      "put": {
+
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Updates a user with specific ID",
+        "parameters": [
+          {
+            "$ref": "#/parameters/userIDinPath"
+          },
+          {
+            "$ref": "#/parameters/userBody"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the user is updated"
+          },
+          "404": {
+            "description": "If there is no user with the given ID"
+          }
+        }
+      },
+      "delete": {
+
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Deletes a user with specific ID",
+        "parameters": [
+          {
+            "$ref": "#/parameters/userIDinPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the user is deleted"
+          },
+          "404": {
+            "description": "If there is no user with the given ID"
+          }
+        }
       }
     },
-
-    "/recipes/{recipeName}/ingredients": {
+    "/login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "description": "Makes a user login",
+        "parameters": [
+          {
+            "name": "user",
+            "description": "user info",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "required": [
+                "email",
+                "password"
+              ],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "description": "user email for authentication",
+                  "default": "default@default"
+                },
+                "password": {
+                  "type": "string",
+                  "description": "user password for authentication",
+                  "default": "default"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If login is successfull"
+          },
+          "404": {
+            "description": "If there is no user with the given data"
+          }
+        }
+      }
+    },
+    "/movies/{title}/cast": {
       "get": {
-        "description": "Retrieves the ingredients of a recipe",
+        "security": [
+          "bearerAuth"
+        ],
+        "description": "Retrieves the cast of a movie title",
         "parameters": [
           {
             "$ref": "#/parameters/recipeNameInPath"
@@ -162,40 +297,134 @@
         ],
         "responses": {
           "200": {
-            "description": "If the recipe exists, it retrieves its ingredients"
+            "description": "If the title exists, it retrieves its cast"
           },
           "404": {
-            "description": "If there is no recipe with the given name"
+            "description": "If there is no title with the given name"
           }
         }
       }
     },
-
-    "/recipes/{recipeName}/ingredients/condiments": {
+    "/movies": {
       "get": {
-        "description": "Retrieves the ingredients of a recipe",
+
+        "tags": [
+          "Movies"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Retrieves all the available movies",
+        "responses": {
+          "200": {
+            "description": "This endpoint always returns with success"
+          }
+        }
+      },
+      "post": {
+
+        "tags": [
+          "Movies"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Insert a new movie into the database",
+        "responses": {
+          "201": {
+            "description": "If the movie was created successfully"
+          },
+          "400": {
+            "description": "If an error occurs"
+          }
+        },
         "parameters": [
           {
-            "$ref": "#/parameters/recipeNameInPath"
+            "$ref": "#/parameters/movieBody"
+          }
+        ]
+      }
+    },
+    "/movies/{show_id}": {
+      "get": {
+
+        "tags": [
+          "Movies"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Retrieves a movie with specific ID",
+        "parameters": [
+          {
+            "$ref": "#/parameters/show_id"
           }
         ],
         "responses": {
           "200": {
-            "description": "If the recipe exists, it retrieves its condiments"
+            "description": "If the Movie exists"
           },
           "404": {
-            "description": "If there is no recipe with the given name"
+            "description": "If there is no movie with the given ID"
           }
         }
-      }
-    },
+      },
+      "delete": {
 
-    "/api/version": {
-      "get": {
-        "description": "Obtem a versão atual da API",
+        "tags": [
+          "Movies"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Deletes a movie with specific ID",
+        "parameters": [
+          {
+            "$ref": "#/parameters/show_id"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Este endpoint retorna sempre com successo"
+            "description": "If the user is deleted"
+          },
+          "404": {
+            "description": "If there is no user with the given ID"
+          }
+        }
+      },
+      "put": {
+
+        "tags": [
+          "Movies"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Updates a Movie with specific ID",
+        "parameters": [
+          {
+            "$ref": "#/parameters/show_id"
+          },
+          {
+            "$ref": "#/parameters/movieBody"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the user is updated"
+          },
+          "404": {
+            "description": "If there is no user with the given ID"
           }
         }
       }

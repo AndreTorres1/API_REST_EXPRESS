@@ -1,101 +1,94 @@
 'use strict';
 
-const {max} = require("pg/lib/defaults");
+const csvParser = require('csv-parser');
+const migrate = require('db-migrate');
+const fs = require('fs');
+const {set} = require("express/lib/application");
+const {callback} = require("pg/lib/native/query");
+
 var dbm;
 var type;
 var seed;
 
 /**
-  * We receive the dbmigrate dependency from dbmigrate initially.
-  * This enables us to not have to rely on NODE_PATH.
-  */
-exports.setup = function(options, seedLink) {
-  dbm = options.dbmigrate;
-  type = dbm.dataType;
-  seed = seedLink;
+ * We receive the dbmigrate dependency from dbmigrate initially.
+ * This enables us to not have to rely on NODE_PATH.
+ */
+exports.setup = function (options, seedLink) {
+    dbm = options.dbmigrate;
+    type = dbm.dataType;
+    seed = seedLink;
 };
 
-async function load_data(db) {
-    return require("./initial_data.json");
-}
 
-function import_data(db, recipes) {
-    let queries = [];
+exports.up = function (db, callback) {
+    const parser = require('csv-parser');
+    const fs = require('fs');
 
-    const ingredients = recipes
-        .map(r => r.ingredients
-            .map(i => {
-                return { name: i.name?.trim()?.toLocaleLowerCase(), type: i.type?.trim()?.toLocaleLowerCase() }
-            })
-        )
-        .flat()
-        .map(i => [
-            `${i.name}-${i.type}`, // key
-            i
-        ]);
+    fs.createReadStream('netflix_titles.csv')
+        .pipe(parser())
+        .on('data', row => {
+            // Insert data into the 'movies' table
+            const values = [
+                row.type,
+                row.title,
+                row.director,
+                row.cast,
+                row.country,
+                row.date_added,
+                row.release_year,
+                row.rating,
+                row.duration,
+                row.listed_in,
+                row.description
+            ];
+            const sql =
+                'INSERT INTO movies(type, title, director,"cast",country,date_added,release_year,rating,duration,listed_in,description) VALUES ($1, $2, $3,$4,$5,$6,$7,$8,$9,$10,$11)';
+            db.runSql(sql, values, function (err) {
+                if (err) throw err;
+                console.log(sql);
+            });
+        })
+        .on('end', () => {
+            // Insert data into the 'cast' table
+            fs.createReadStream('netflix_titles.csv')
+                .pipe(parser())
+                .on('data', row => {
+                    const cast = [row.cast];
+                    const sqlcast = 'INSERT INTO "cast"( "cast" ) VALUES ($1)';
+                    db.runSql(sqlcast, cast, function (err) {
+                        if (err) throw err;
+                        console.log(sqlcast);
+                    });
+                })
+                .on('end', () => {
+                    // Insert data into the 'title' table
+                    fs.createReadStream('netflix_titles.csv')
+                        .pipe(parser())
+                        .on('data', row => {
+                            const title = [row.title];
+                            const sqltitle = 'INSERT INTO title(title) VALUES ($1)';
+                            db.runSql(sqltitle, title, function (err) {
+                                if (err) throw err;
+                                console.log(sqltitle);
+                            });
+                        })
+                        .on('end', () => {
+                            // Call the callback function to signal that the migration is complete
+                            callback();
+                        });
+                });
+        });
 
-    // import ingredients
-    let inserted_ingredients = {};
-    for (let [key, ingredient] of ingredients) {
-        if(inserted_ingredients[key]) {
-            continue;
-        }
-
-        inserted_ingredients[key] = ingredient;
-
-        queries.push(db.insert(
-            "ingredients",
-            ["name", "type"],
-            [ingredient.name, ingredient.type]
-        ));
-    }
-
-    // import recipes
-    for(let recipe of recipes) {
-        queries.push(db.insert(
-            "recipes",
-            ["name", "image_url", "original_url"],
-            [recipe.name, recipe.imageURL||"", recipe.originalURL||""]
-        ));
-
-        // create steps
-        for(let i = 0; i < recipe.steps.length; ++i) {
-            queries.push(db.runSql(`
-                INSERT INTO
-                  recipe_steps(recipe_id, description, time)
-                VALUES (
-                  (SELECT id FROM recipes WHERE name = ? LIMIT 1),
-                  ?,
-                  ?
-                )
-            `, [recipe.name, recipe.steps[i], recipe.timers[i]]));
-        }
-
-        // create ingredients
-        for(let {quantity, name, type} of recipe.ingredients) {
-            queries.push(db.runSql(`
-                INSERT INTO
-                  recipe_ingredients(recipe_id, ingredient_id, quantity)
-                VALUES (
-                  (SELECT id FROM recipes WHERE name = ? LIMIT 1),
-                  (SELECT id FROM ingredients WHERE name = ? AND type = ? LIMIT 1),
-                  ?
-                )
-            `, [recipe.name, name?.trim()?.toLocaleLowerCase(), type?.trim()?.toLocaleLowerCase(), quantity]));
-        }
-    }
-
-    return Promise.all(queries);
-}
-
-exports.up = function(db) {
-    return load_data(db).then(data => import_data(db, data));
 };
 
-exports.down = function(db) {
-  return null;
+exports.down = function (db, callback) {
+    db.runSql('TRUNCATE TABLE movies;', function (err) {
+        if (err) throw err;
+        callback();
+    });
 };
 
 exports._meta = {
-  "version": 1
+    "version": 1
 };

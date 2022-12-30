@@ -1,3 +1,4 @@
 module.exports = {
-    recipes: require("./recipes")
+    users: require("./users"),
+    movies: require("./movies")
 }

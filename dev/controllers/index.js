@@ -1,4 +1,5 @@
 module.exports = {
-    recipes: require("./recipes"),
-    version: require("./version")
+    users: require("./users"),
+    version: require("./version"),
+    movies: require("./movies")
 }

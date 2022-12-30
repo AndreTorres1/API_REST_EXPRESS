@@ -16,6 +16,8 @@ module.exports = {
      */
     port: env.PORT || 3000,
 
+    jwt_key: env.JWT_KEY || 'secret',
+
     hostname: env.HOST || "localhost",
 
     baseUrl: env.BASE_URL || "/api/v1",
