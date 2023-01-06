@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "migrate": "db-migrate up -v",
+    "migrate-down" : "db-migrate down -v",
     "prestart": "(npm install) && (NODE_ENV=dev npm run migrate)",
     "start": "node index.js",
     "watch": "nodemon index.js",
@@ -19,6 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "chai": "^4.3.7",
     "cors": "^2.8.5",
     "csv-parse": "^5.3.3",
     "csv-parser": "^3.0.0",

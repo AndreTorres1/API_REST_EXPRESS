@@ -5,6 +5,7 @@ const migrate = require('db-migrate');
 const fs = require('fs');
 const {set} = require("express/lib/application");
 const {callback} = require("pg/lib/native/query");
+const parser = require("csv-parser");
 
 var dbm;
 var type;
@@ -28,7 +29,6 @@ exports.up = function (db, callback) {
     fs.createReadStream('netflix_titles.csv')
         .pipe(parser())
         .on('data', row => {
-            // Insert data into the 'movies' table
             const values = [
                 row.type,
                 row.title,
@@ -50,7 +50,6 @@ exports.up = function (db, callback) {
             });
         })
         .on('end', () => {
-            // Insert data into the 'cast' table
             fs.createReadStream('netflix_titles.csv')
                 .pipe(parser())
                 .on('data', row => {
@@ -62,7 +61,6 @@ exports.up = function (db, callback) {
                     });
                 })
                 .on('end', () => {
-                    // Insert data into the 'title' table
                     fs.createReadStream('netflix_titles.csv')
                         .pipe(parser())
                         .on('data', row => {
@@ -72,23 +70,36 @@ exports.up = function (db, callback) {
                                 if (err) throw err;
                                 console.log(sqltitle);
                             });
-                        })
-                        .on('end', () => {
-                            // Call the callback function to signal that the migration is complete
-                            callback();
-                        });
+                        }).on('end', () => {
+                        fs.createReadStream('netflix_titles.csv')
+                            .pipe(parser())
+                            .on('data', row => {
+                                const rows = [
+                                    row.title,
+                                    row.cast
+                                ];
+                                const sqlInsert = 'INSERT INTO title_cast(title_id,cast_id) VALUES ($1,$2)';
+                                db.runSql(sqlInsert, rows, function (err) {
+                                    if (err) throw err;
+                                    console.log(sqlInsert);
+                                });
+                            })
+                            .on('end', () => {
+                                callback();
+                            });
+                    });
                 });
+
+        })
+};
+
+    exports.down = function (db, callback) {
+        db.runSql('TRUNCATE TABLE movies;', function (err) {
+            if (err) throw err;
+            callback();
         });
+    };
 
-};
-
-exports.down = function (db, callback) {
-    db.runSql('TRUNCATE TABLE movies;', function (err) {
-        if (err) throw err;
-        callback();
-    });
-};
-
-exports._meta = {
-    "version": 1
-};
+    exports._meta = {
+        "version": 1
+    };
