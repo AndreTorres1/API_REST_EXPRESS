@@ -26,7 +26,7 @@ exports.up = function (db, callback) {
     const parser = require('csv-parser');
     const fs = require('fs');
 
-    fs.createReadStream('netflix_titles.csv')
+    fs.createReadStream('netflix_real_titles.csv')
         .pipe(parser())
         .on('data', row => {
             const values = [
@@ -50,7 +50,7 @@ exports.up = function (db, callback) {
             });
         })
         .on('end', () => {
-            fs.createReadStream('netflix_titles.csv')
+            fs.createReadStream('netflix_real_titles.csv')
                 .pipe(parser())
                 .on('data', row => {
                     const cast = [row.cast];
@@ -61,7 +61,7 @@ exports.up = function (db, callback) {
                     });
                 })
                 .on('end', () => {
-                    fs.createReadStream('netflix_titles.csv')
+                    fs.createReadStream('netflix_real_titles.csv')
                         .pipe(parser())
                         .on('data', row => {
                             const title = [row.title];
@@ -71,7 +71,7 @@ exports.up = function (db, callback) {
                                 console.log(sqltitle);
                             });
                         }).on('end', () => {
-                        fs.createReadStream('netflix_titles.csv')
+                        fs.createReadStream('netflix_real_titles.csv')
                             .pipe(parser())
                             .on('data', row => {
                                 const rows = [

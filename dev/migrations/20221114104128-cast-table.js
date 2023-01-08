@@ -23,14 +23,14 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db, callback) {
     return db.createTable('title', {
         id: {type: 'int', primaryKey: true, autoIncrement: true},
-        title: {type: 'string', notNull: true}
+        title: {type: 'string'}
 
     }, function (err) {
         if (err) throw err;
 
         db.createTable('cast', {
             id: {type: 'int', primaryKey: true, autoIncrement: true},
-            cast: {type: 'string', notNull: true}
+            cast: {type: 'string'}
 
         }, function (err) {
             if (err) throw err;

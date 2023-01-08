@@ -39,6 +39,16 @@
       },
       "default": ""
     },
+    "title": {
+      "name": "title",
+      "in": "path",
+      "description": "The title of the Movie",
+      "required": true,
+      "schema": {
+        "type": "string"
+      },
+      "default": "Ganglands"
+    },
     "show_id": {
       "name": "show_id",
       "in": "path",
@@ -48,17 +58,6 @@
         "type": "integer"
       },
       "default": ""
-    },
-    "releaseYear": {
-      "name": "release_year",
-      "in": "path",
-      "description": "The release year data",
-      "required": true,
-      "schema": {
-        "type": "string"
-      },
-      "default": "2009",
-      "type": "integer"
     },
     "email": {
       "name": "email",
@@ -98,9 +97,6 @@
   "paths": {
     "/version": {
       "get": {
-        "security": [
-          "bearerAuth"
-        ],
         "tags": [
           "Version"
         ],
@@ -117,7 +113,6 @@
     },
     "/users": {
       "get": {
-
         "tags": [
           "Admin"
         ],
@@ -137,7 +132,6 @@
         }
       },
       "post": {
-
         "tags": [
           "Admin"
         ],
@@ -164,7 +158,6 @@
     },
     "/users/{id}": {
       "get": {
-
         "tags": [
           "Admin"
         ],
@@ -181,15 +174,14 @@
         ],
         "responses": {
           "200": {
-            "description": "If the recipe exists"
+            "description": "If the user exists"
           },
           "404": {
-            "description": "If there is no recipe with the given name"
+            "description": "If there is no user with the given name"
           }
         }
       },
       "put": {
-
         "tags": [
           "Admin"
         ],
@@ -217,7 +209,6 @@
         }
       },
       "delete": {
-
         "tags": [
           "Admin"
         ],
@@ -286,13 +277,15 @@
     },
     "/movies/{title}/cast": {
       "get": {
-        "security": [
-          "bearerAuth"
-        ],
         "description": "Retrieves the cast of a movie title",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
         "parameters": [
           {
-            "$ref": "#/parameters/recipeNameInPath"
+            "$ref": "#/parameters/title"
           }
         ],
         "responses": {
@@ -307,7 +300,6 @@
     },
     "/movies": {
       "get": {
-
         "tags": [
           "Movies"
         ],
@@ -324,7 +316,6 @@
         }
       },
       "post": {
-
         "tags": [
           "Movies"
         ],
@@ -351,7 +342,6 @@
     },
     "/movies/{show_id}": {
       "get": {
-
         "tags": [
           "Movies"
         ],
@@ -376,7 +366,6 @@
         }
       },
       "delete": {
-
         "tags": [
           "Movies"
         ],
@@ -401,7 +390,6 @@
         }
       },
       "put": {
-
         "tags": [
           "Movies"
         ],

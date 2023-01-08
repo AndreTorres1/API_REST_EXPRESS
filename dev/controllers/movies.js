@@ -10,8 +10,16 @@ module.exports = {
 
     getMovieById: async (req, res) => {
         try {
-            console.log(req.params.show_id);
             let movie = await services.movies.getMovieById(req.params.show_id);
+            res.status(200).send(movie);
+        } catch ({message}) {
+            res.status(404).send({error: message});
+        }
+    },
+    getCastByTitle: async (req, res) => {
+        try {
+            console.log(req.params.title);
+            let movie = await services.movies.getCastByTitle(req.params.title);
             res.status(200).send(movie);
         } catch ({message}) {
             res.status(404).send({error: message});

@@ -54,14 +54,14 @@ module.exports = {
             const {
                 email,
                 password,
-                permissao
+                role
             } = req.body;
             const hash = await bcrypt.hashSync(password, 10)
             let user = await services.users.update({
                 id: req.params.id,
                 email: email,
                 password: hash,
-                permissao: permissao
+                role: role
             });
             res.status(200).send(user);
         } catch ({message}) {
@@ -74,14 +74,14 @@ module.exports = {
             const {
                 email,
                 password,
-                permissao
+                role
             } = req.body;
             const hash = await bcrypt.hashSync(password, 10)
 
 
             res.status(201).send(
                 await services.users.insert({
-                    email, password: hash, permissao: permissao
+                    email, password: hash, role: role
                 })
             );
         } catch ({message}) {
@@ -90,8 +90,7 @@ module.exports = {
     },
     delete: async (req, res) => {
         try {
-            // Call the delete function from the services with the show_id from the request parameters
-            let result = await services.movies.delete(req.params.show_id);
+            let result = await services.users.delete(req.params.id);
             res.status(200).send(result);
         } catch ({message}) {
             res.status(404).send({error: message});

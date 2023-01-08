@@ -20,10 +20,10 @@ module.exports = {
             WHERE id = $1
         `, [id]).then(q => q.rows);
 
-        if (users.rowCount > 0) {
+        if (users.rowCount === 0) {
             return new message(`User with id='${id}' not found!`);
-            ;
         }
+return users;
     },
 
 
@@ -41,30 +41,30 @@ module.exports = {
     //     `, [id]).then(q => q.rows);
     // },
 
-    delete: async (show_id) => {
+    delete: async (id) => {
         const {rowCount} = await db.query(`
             DELETE
-            FROM movies
-            WHERE show_id = $1
-        `, [show_id]);
+            FROM users
+            WHERE id = $1
+        `, [id]);
 
         if (rowCount === 0) {
-            throw new Error(`Movie with show_id '${show_id}' not found`);
+            throw new Error(`User with id '${id}' not found`);
         }
 
-        return {message: `Movie with show_id '${show_id}' deleted`};
+        return {message: `User with ID '${id}' deleted`};
     },
-    update: async ({id, email, password, permissao}) => {
+    update: async ({id, email, password, role}) => {
         return db.query(`
             UPDATE users
             SET email     = $2,
                 password  = $3,
-                permissao = $4
+                role = $4
             WHERE id = $1 RETURNING *
-        `, [id, email, password, permissao]).then(q => q.rows);
+        `, [id, email, password, role]).then(q => q.rows);
     },
 
-    insert: async ({id = uuidv4(), email = "", password = "hash", permissao = ""}) => {
+    insert: async ({id = uuidv4(), email = "", password = "hash", role = ""}) => {
 
         const result = await db.query(`
             SELECT *
@@ -75,9 +75,9 @@ module.exports = {
 
         if (result.rows.length === 0) {
             return db.query(`
-                INSERT INTO users(id, email, password, permissao)
+                INSERT INTO users(id, email, password, role)
                 VALUES ($1, $2, $3, $4) RETURNING *
-            `, [id, email, password, permissao]).then(q => q.rows);
+            `, [id, email, password, role]).then(q => q.rows);
         } else {
 
             throw new Error('Email already exists');

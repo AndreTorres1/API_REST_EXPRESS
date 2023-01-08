@@ -21,6 +21,17 @@ module.exports = {
             return user[0];
         }
     },
+    getCastByTitle: async (title) => {
+        const movie = await db.query(`
+            SELECT cast_id
+            FROM title_cast
+            WHERE title_id = $1
+        `, [title]).then(q => q.rows);
+
+        if (movie.length > 0) {
+            return movie[0];
+        }
+    },
 
 
     // getIngredientsByType: async(id, type) => {
