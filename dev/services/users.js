@@ -23,23 +23,8 @@ module.exports = {
         if (users.rowCount === 0) {
             return new message(`User with id='${id}' not found!`);
         }
-return users;
+        return users;
     },
-
-
-    // getIngredients: async(id) => {
-    //     return await db.query(`
-    //         SELECT
-    //           i.name,
-    //           i.type,
-    //           ri.quantity
-    //         FROM
-    //           recipe_ingredients ri JOIN ingredients i ON
-    //             ri.ingredient_id = i.id
-    //         WHERE
-    //           ri.recipe_id = $1
-    //     `, [id]).then(q => q.rows);
-    // },
 
     delete: async (id) => {
         const {rowCount} = await db.query(`
@@ -57,15 +42,19 @@ return users;
     update: async ({id, email, password, role}) => {
         return db.query(`
             UPDATE users
-            SET email     = $2,
-                password  = $3,
-                role = $4
+            SET email    = $2,
+                password = $3,
+                role     = $4
             WHERE id = $1 RETURNING *
         `, [id, email, password, role]).then(q => q.rows);
     },
 
-    insert: async ({id = uuidv4(), email = "", password = "hash", role = ""}) => {
+    insert: async ({id = uuidv4(), email = "", password = "hash", role = ""}, res) => {
+        const validRoles = ["admin", "edit", "view"];
+        if (!validRoles.includes(role)) {
 
+            return {message: `use a valid role like: "admin" "edit" "view"`}
+        }
         const result = await db.query(`
             SELECT *
             FROM users

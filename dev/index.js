@@ -14,18 +14,13 @@ const apiUrl = require("./api-url");
 const controllers = require("./controllers");
 const swaggerDocument = require("./doc/swagger.json");
 const swaggerUi = require("swagger-ui-express");
-const verifyToken = require('./jwt/verifyJWT')
+const checkUserRole = require('./jwt/checkRole');
 
 const app = express();
 app.use(express.json());
 app.use(cors({credentials: true, origin: true}));
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
-const protectPaths = (req, res, next) => {
-    if (req.path !== '/login') {
-        return verifyToken(req, res, next);
-    }
-    return next();
-};
+
 
 [
     {method: "get", url: "version", cb: controllers.version.get},
@@ -45,7 +40,29 @@ const protectPaths = (req, res, next) => {
 
 
 ].forEach(({method, url, cb}) => {
-    app[method](apiUrl(url), protectPaths, cb);
+    app[method](apiUrl(url), checkUserRole('admin'), cb);
+});
+[
+    {method: "get", url: "version", cb: controllers.version.get},
+
+    {method: "get", url: "edit/movies", cb: controllers.movies.getAll},
+    {method: "post", url: "edit/movies", cb: controllers.movies.insert},
+    {method: "delete", url: "edit/movies/:show_id", cb: controllers.movies.delete},
+    {method: "put", url: "edit/movies/:show_id", cb: controllers.movies.update},
+    {method: "get", url: "edit/movies/:show_id", cb: controllers.movies.getMovieById},
+    {method: "get", url: "edit/movies/:title/cast", cb: controllers.movies.getCastByTitle}
+
+].forEach(({method, url, cb}) => {
+    app[method](apiUrl(url), checkUserRole('edit'), cb);
+});
+
+[
+    {method: "get", url: "version", cb: controllers.version.get},
+
+    {method: "get", url: "view/movies", cb: controllers.movies.getAll}
+
+].forEach(({method, url, cb}) => {
+    app[method](apiUrl(url), checkUserRole('view'), cb);
 });
 
 app.post(apiUrl("login"), controllers.users.login);

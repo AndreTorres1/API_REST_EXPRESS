@@ -80,7 +80,7 @@
       "in": "body",
       "schema": {
         "type": "string",
-        "default": "{\n    \"email\":\"default@default\",\n    \"password\":\"default\",\n    \"permissao\": \"admin\"\n}"
+        "default": "{\n    \"email\":\"default@default\",\n    \"password\":\"default\",\n    \"role\": \"admin\"\n}"
       }
     },
     "movieBody": {
@@ -275,8 +275,11 @@
         }
       }
     },
-    "/movies/{title}/cast": {
+    "/edit/movies/{title}/cast": {
       "get": {
+        "tags": [
+          "Edit"
+        ],
         "description": "Retrieves the cast of a movie title",
         "security": [
           {
@@ -298,10 +301,36 @@
         }
       }
     },
-    "/movies": {
+    "/movies/{title}/cast": {
       "get": {
         "tags": [
-          "Movies"
+          "Admin"
+        ],
+        "description": "Retrieves the cast of a movie title",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/title"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the title exists, it retrieves its cast"
+          },
+          "404": {
+            "description": "If there is no title with the given name"
+          }
+        }
+      }
+    },
+    "/edit/movies": {
+      "get": {
+        "tags": [
+          "Edit"
         ],
         "security": [
           {
@@ -317,7 +346,7 @@
       },
       "post": {
         "tags": [
-          "Movies"
+          "Edit"
         ],
         "security": [
           {
@@ -340,10 +369,70 @@
         ]
       }
     },
-    "/movies/{show_id}": {
+    "/view/movies": {
       "get": {
         "tags": [
-          "Movies"
+          "View"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Retrieves all the available movies",
+        "responses": {
+          "200": {
+            "description": "This endpoint always returns with success"
+          }
+        }
+      }
+    },
+    "/movies": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Retrieves all the available movies",
+        "responses": {
+          "200": {
+            "description": "This endpoint always returns with success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Insert a new movie into the database",
+        "responses": {
+          "201": {
+            "description": "If the movie was created successfully"
+          },
+          "400": {
+            "description": "If an error occurs"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/parameters/movieBody"
+          }
+        ]
+      }
+    },
+    "/edit/movies/{show_id}": {
+      "get": {
+        "tags": [
+          "Edit"
         ],
         "security": [
           {
@@ -367,7 +456,7 @@
       },
       "delete": {
         "tags": [
-          "Movies"
+          "Edit"
         ],
         "security": [
           {
@@ -391,7 +480,84 @@
       },
       "put": {
         "tags": [
-          "Movies"
+          "Edit"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Updates a Movie with specific ID",
+        "parameters": [
+          {
+            "$ref": "#/parameters/show_id"
+          },
+          {
+            "$ref": "#/parameters/movieBody"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the user is updated"
+          },
+          "404": {
+            "description": "If there is no user with the given ID"
+          }
+        }
+      }
+    },
+    "/movies/{show_id}": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Retrieves a movie with specific ID",
+        "parameters": [
+          {
+            "$ref": "#/parameters/show_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the Movie exists"
+          },
+          "404": {
+            "description": "If there is no movie with the given ID"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin"
+        ],
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "description": "Deletes a movie with specific ID",
+        "parameters": [
+          {
+            "$ref": "#/parameters/show_id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the user is deleted"
+          },
+          "404": {
+            "description": "If there is no user with the given ID"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Admin"
         ],
         "security": [
           {

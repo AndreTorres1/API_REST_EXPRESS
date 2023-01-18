@@ -16,6 +16,7 @@ module.exports = {
             res.status(404).send({error: message});
         }
     },
+
     getCastByTitle: async (req, res) => {
         try {
             console.log(req.params.title);
@@ -26,25 +27,6 @@ module.exports = {
         }
     },
 
-    // getMovieByTitle: async(req, res) => {
-    //     try {
-    //         res.status(200).send(
-    //             await services.movies.getMovieBytitle(req.params.title)
-    //         );
-    //     } catch ({message}) {
-    //         res.status(404).send({error: message});
-    //     }
-    // },
-    //
-    // getCondimentsByRecipeId: async(req, res) => {
-    //     try {
-    //         res.status(200).send(
-    //             await services.recipes.getIngredientsByType(req.params.id,"condiments")
-    //         );
-    //     } catch ({message}) {
-    //         res.status(404).send({error: message});
-    //     }
-    // },
     delete: async (req, res) => {
         try {
             const show_id = req.params.show_id;
@@ -69,7 +51,7 @@ module.exports = {
                 listed_in,
                 description
             } = req.body;
-const id = req.params.show_id
+            const id = req.params.show_id
             let user = await services.movies.update({
                 id: id,
                 type: type,

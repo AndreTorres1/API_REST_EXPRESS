@@ -6,8 +6,8 @@ const secret = 'secret';
 const verifyToken = require('../jwt/verifyJWT')
 const {verify} = require("jsonwebtoken");
 
-function jwtTokens({id, email}) {
-    const user = {id, email};
+function jwtTokens({id, email, role}) {
+    const user = {id, email, role};
     const accessToken = jwt.sign(user, secret, {expiresIn: '20m'});
     return ({accessToken});
 }
@@ -30,25 +30,6 @@ module.exports = {
     },
 
 
-    // getIngredientsByRecipeId: async(req, res) => {
-    //     try {
-    //         res.status(200).send(
-    //             await services.recipes.getIngredients(req.params.id)
-    //         );
-    //     } catch ({message}) {
-    //         res.status(404).send({error: message});
-    //     }
-    // },
-    //
-    // getCondimentsByRecipeId: async(req, res) => {
-    //     try {
-    //         res.status(200).send(
-    //             await services.recipes.getIngredientsByType(req.params.id,"condiments")
-    //         );
-    //     } catch ({message}) {
-    //         res.status(404).send({error: message});
-    //     }
-    // },
     update: async (req, res) => {
         try {
             const {
